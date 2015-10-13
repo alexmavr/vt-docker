@@ -3,7 +3,6 @@ from subprocess import call
 import os
 
 cwd = os.getcwd()
-print cwd
 
 teams = int(raw_input("How many teams of 4 are there in the experiment? "))
 
@@ -13,6 +12,9 @@ for team in range(teams):
     teamid = "team"+str(team)
     call(["mkdir", teamid])
     call(["git", "init", teamid])
+    call(["touch", teamid+"/README"])
+    call(["git", "add", teamid+"/README"])
+    call(["git", "commit", "-m", "initial commit"])
     print teamid
     
     for member in range(4):
@@ -25,7 +27,6 @@ for team in range(teams):
                                  }, binds = [cwd + "/" + teamid + ":/opt/remotegit"]
                                  ))
         resp = c.start(container=ctr.get("Id"))
-        print resp
 
     #mkdir team repo
     # docker run 4 containers, mount repo

@@ -25,7 +25,6 @@ ADD web /web/
 RUN pip install -r /web/requirements.txt
 ADD noVNC /noVNC/
 ADD nginx.conf /etc/nginx/sites-enabled/default
-ADD startup.sh /
 ADD supervisord.conf /etc/supervisor/conf.d/
 
 # SSH setup
@@ -49,17 +48,20 @@ RUN export uid=1000 gid=1000 && \
     chmod 0440 /etc/sudoers.d/ubuntu && \
     chown ${uid}:${gid} -R /home/ubuntu
 
+RUN mkdir -p /var/run/sshd
+RUN echo "ubuntu:ubuntu" | chpasswd
+
+ADD startup.sh /home/ubuntu/startup.sh
+
 ENV HOME /home/ubuntu
 WORKDIR /home/ubuntu
 
-RUN git clone https://github.com/cmusv-sc/collaborative-vistrails
-
-
+ADD vistrails.sh /home/ubuntu/Desktop/
+RUN git clone https://github.com/cmusv-sc/collaborative-vistrails 
+RUN chown -R ubuntu /home/ubuntu/collaborative-vistrails
+RUN chgrp -R ubuntu /home/ubuntu/collaborative-vistrails
+RUN chmod 777 -R /home/ubuntu/collaborative-vistrails
 ADD config.py /home/ubuntu/collaborative-vistrails/vistrails/packages/collaboration/config.py
 
-ADD vistrails.sh /home/ubuntu/Desktop/
-ADD startup.sh /home/ubuntu/startup.sh
-RUN /home/ubuntu/startup.sh
-
 EXPOSE 6080
-ENTRYPOINT ["/usr/bin/python /home/ubuntu/collaborative-vistrails/vistrails/run.py"]
+ENTRYPOINT ["/home/ubuntu/startup.sh"]
