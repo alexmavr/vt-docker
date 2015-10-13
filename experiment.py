@@ -10,11 +10,8 @@ c = docker.Client()
 
 for team in range(teams):
     teamid = "team"+str(team)
-    call(["mkdir", teamid])
-    call(["git", "init", teamid])
-    call(["touch", teamid+"/README"])
-    call(["git", "add", teamid+"/README"])
-    call(["git", "commit", "-m", "initial commit"])
+    call(["cp", "-rf", "template", teamid])
+
     print teamid
     
     for member in range(4):
