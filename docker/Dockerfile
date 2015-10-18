@@ -37,6 +37,7 @@ EXPOSE 22
 RUN sudo apt-get update && sudo apt-get install -y python python-dev python-pip git xvfb python-qt4 python-qt4-gl python-qt4-sql python-vtk gfortran libopenblas-dev liblapack-dev zip
 RUN sudo pip install numpy && sudo pip install scipy gitpython
 RUN sudo apt-get install -y libxext-dev libxrender-dev libxtst-dev
+RUN sudo apt-get install -y python-mysqldb
 
 
 # VisTrails layer
@@ -57,7 +58,7 @@ ENV HOME /home/ubuntu
 WORKDIR /home/ubuntu
 
 ADD vistrails.sh /home/ubuntu/Desktop/
-RUN git clone https://github.com/cmusv-sc/collaborative-vistrails 
+RUN git clone https://github.com/cmusv-sc/collaborative-vistrails /home/ubuntu/collaborative-vistrails
 RUN chown -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chgrp -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chmod 777 -R /home/ubuntu/collaborative-vistrails
