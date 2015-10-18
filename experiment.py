@@ -31,7 +31,7 @@ for team in range(teams):
 
     # Launch MySQL container
     mysqlpath = teamid+"mysql"
-    ctr = c.create_container(image="mysql/mysql-server", 
+    ctr = c.create_container(image="afein/mysql-vistrails", 
                              environment={"MYSQL_ROOT_PASSWORD": "root"},
                              name=mysqlpath)
     resp = c.start(container=ctr.get("Id"))
