@@ -7,7 +7,7 @@ ENV HOME /root
 # Desktop packages
 RUN apt-get update \
     && apt-get install -y --force-yes --no-install-recommends supervisor \
-        openssh-server pwgen sudo vim-tiny \
+        pwgen sudo vim-tiny \
         net-tools \
         lxde x11vnc xvfb \
         gtk2-engines-murrine ttf-ubuntu-font-family \
@@ -27,17 +27,12 @@ ADD noVNC /noVNC/
 ADD nginx.conf /etc/nginx/sites-enabled/default
 ADD supervisord.conf /etc/supervisor/conf.d/
 
-# SSH setup
-RUN mkdir /var/run/sshd
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-EXPOSE 22
-
 
 # Vistrails packages
 RUN sudo apt-get update && sudo apt-get install -y python python-dev python-pip git xvfb python-qt4 python-qt4-gl python-qt4-sql python-vtk gfortran libopenblas-dev liblapack-dev zip
 RUN sudo pip install numpy && sudo pip install scipy gitpython
 RUN sudo apt-get install -y libxext-dev libxrender-dev libxtst-dev
-RUN sudo apt-get install -y python-mysqldb
+RUN sudo apt-get install -y python-mysqldb python-matplotlib 
 
 
 # VisTrails layer
@@ -49,7 +44,6 @@ RUN export uid=1000 gid=1000 && \
     chmod 0440 /etc/sudoers.d/ubuntu && \
     chown ${uid}:${gid} -R /home/ubuntu
 
-RUN mkdir -p /var/run/sshd
 RUN echo "ubuntu:ubuntu" | chpasswd
 
 ADD startup.sh /home/ubuntu/startup.sh
@@ -57,12 +51,15 @@ ADD startup.sh /home/ubuntu/startup.sh
 ENV HOME /home/ubuntu
 WORKDIR /home/ubuntu
 
+RUN echo "copy"
 ADD vistrails.sh /home/ubuntu/Desktop/
 RUN git clone https://github.com/cmusv-sc/collaborative-vistrails /home/ubuntu/collaborative-vistrails
 RUN chown -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chgrp -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chmod 777 -R /home/ubuntu/collaborative-vistrails
 ADD config.py /home/ubuntu/collaborative-vistrails/vistrails/packages/collaboration/config.py
+
+RUN mkdir /root/.ssh
 
 EXPOSE 6080
 ENTRYPOINT ["/home/ubuntu/startup.sh"]

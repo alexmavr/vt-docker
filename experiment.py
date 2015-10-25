@@ -26,9 +26,6 @@ for team in range(teams):
     teamid = "team"+str(team)
     print teamid
 
-    call(["cp", "-rf", "template", teamid])
-    os.system("cd " + teamid + "&& git branch test && git checkout test")
-
     # Launch MySQL container
     mysqlpath = teamid+"mysql"
     ctr = c.create_container(image="afein/mysql-vistrails", 
@@ -37,20 +34,25 @@ for team in range(teams):
     resp = c.start(container=ctr.get("Id"))
     mysql_conts.append(ctr)
 
+    # Launch Git container
+    gitpath = teamid+"git"
+    new_ctr = c.create_container(image="afein/sshgit", 
+                                 ports=[22],
+                                 name=gitpath)
+    git_ctr_id = new_ctr.get("Id")
+    resp = c.start(container=git_ctr_id)
+    print c.port(git_ctr_id, 22)
+    
+
     
     for member in range(4):
-        ctr = c.create_container(image="afein/vt-experiment", 
-                                 ports=[22, 6080],
-                                 volumes=["/opt/remotegit"],
+        ctr = c.create_container(image="afein/vt-experiment-2", 
+                                 ports=[6080],
                                  host_config=c.create_host_config(port_bindings={
-                                     22: ('127.0.0.1',),
-                                     6080: ('127.0.0.1',)
-                                 }, binds = [cwd + "/" + teamid + ":/opt/remotegit"],
-                                 links={mysqlpath:"mysql"}
+                                     6080: ('0.0.0.0',)
+                                 }, 
+                                     links={mysqlpath:"mysql", gitpath:"git"}
                                  ))
         resp = c.start(container=ctr.get("Id"))
-
-    #mkdir team repo
-    # docker run 4 containers, mount repo
-    # return port numbers
+        print " Team " + str(team) + " Member " + str(member) + " port: " + c.port(ctr.get("Id"), 6080)[0]["HostPort"]
 
