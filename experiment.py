@@ -41,7 +41,6 @@ for team in range(teams):
                                  name=gitpath)
     git_ctr_id = new_ctr.get("Id")
     resp = c.start(container=git_ctr_id)
-    print c.port(git_ctr_id, 22)
     
 
     

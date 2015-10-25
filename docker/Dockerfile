@@ -44,22 +44,21 @@ RUN export uid=1000 gid=1000 && \
     chmod 0440 /etc/sudoers.d/ubuntu && \
     chown ${uid}:${gid} -R /home/ubuntu
 
+RUN mkdir /home/ubuntu/.ssh
+RUN chown 1000:1000 -R /home/ubuntu/.ssh
 RUN echo "ubuntu:ubuntu" | chpasswd
 
-ADD startup.sh /home/ubuntu/startup.sh
 
 ENV HOME /home/ubuntu
 WORKDIR /home/ubuntu
 
-RUN echo "copy"
+ADD startup.sh /home/ubuntu/startup.sh
 ADD vistrails.sh /home/ubuntu/Desktop/
 RUN git clone https://github.com/cmusv-sc/collaborative-vistrails /home/ubuntu/collaborative-vistrails
 RUN chown -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chgrp -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chmod 777 -R /home/ubuntu/collaborative-vistrails
 ADD config.py /home/ubuntu/collaborative-vistrails/vistrails/packages/collaboration/config.py
-
-RUN mkdir /root/.ssh
 
 EXPOSE 6080
 ENTRYPOINT ["/home/ubuntu/startup.sh"]
