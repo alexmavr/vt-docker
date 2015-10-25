@@ -10,9 +10,6 @@ teams = int(raw_input("How many teams of 4 are there in the experiment? "))
 
 c = docker.Client()
 
-# cleanup
-os.system("sudo rm -rf team*")
-
 mysql_conts = []
 
 def sigint_handler(signal, frame):
@@ -45,7 +42,7 @@ for team in range(teams):
 
     
     for member in range(4):
-        ctr = c.create_container(image="afein/vt-experiment-2", 
+        ctr = c.create_container(image="afein/vt-experiment", 
                                  ports=[6080],
                                  host_config=c.create_host_config(port_bindings={
                                      6080: ('0.0.0.0',)

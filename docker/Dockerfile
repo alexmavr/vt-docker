@@ -54,11 +54,16 @@ WORKDIR /home/ubuntu
 
 ADD startup.sh /home/ubuntu/startup.sh
 ADD vistrails.sh /home/ubuntu/Desktop/
+ADD rsa_setup.sh /home/ubuntu/Desktop/
+RUN echo "asasd"
 RUN git clone https://github.com/cmusv-sc/collaborative-vistrails /home/ubuntu/collaborative-vistrails
 RUN chown -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chgrp -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chmod 777 -R /home/ubuntu/collaborative-vistrails
 ADD config.py /home/ubuntu/collaborative-vistrails/vistrails/packages/collaboration/config.py
+
+RUN sudo git config --global user.email "team@cmu.edu"
+RUN sudo git config --global user.name "Team Member"
 
 EXPOSE 6080
 ENTRYPOINT ["/home/ubuntu/startup.sh"]
