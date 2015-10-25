@@ -32,7 +32,7 @@ ADD supervisord.conf /etc/supervisor/conf.d/
 RUN sudo apt-get update && sudo apt-get install -y python python-dev python-pip git xvfb python-qt4 python-qt4-gl python-qt4-sql python-vtk gfortran libopenblas-dev liblapack-dev zip
 RUN sudo pip install numpy && sudo pip install scipy gitpython
 RUN sudo apt-get install -y libxext-dev libxrender-dev libxtst-dev
-RUN sudo apt-get install -y python-mysqldb python-matplotlib 
+RUN sudo apt-get install -y python-mysqldb python-matplotlib python-qscintilla2
 
 
 # VisTrails layer
