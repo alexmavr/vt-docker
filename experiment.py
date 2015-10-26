@@ -3,9 +3,6 @@ from subprocess import call
 import os
 import signal
 import sys
-import socket
-import fcntl
-import struct
 
 cwd = os.getcwd()
 
@@ -15,7 +12,6 @@ c = docker.Client()
 
 mysql_conts = []
 
-# SIGINT handler that deletes mysql containers
 def sigint_handler(signal, frame):
     for ctr in mysql_conts:
         c.remove_container(ctr.get("Id"))
@@ -23,21 +19,11 @@ def sigint_handler(signal, frame):
 
 signal.signal(signal.SIGINT, sigint_handler)
 
-
-# IP Address retrieval for an interface
-def get_ip_address(ifname):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,  # SIOCGIFADDR
-        struct.pack('256s', ifname[:15])
-    )[20:24])
-
-ip = get_ip_address('wlan0')  
-
 for team in range(teams):
     teamid = "team"+str(team)
     print teamid
+    os.system("rm -rf "+teamid)
+    os.system("mkdir "+teamid)
 
     # Launch MySQL container
     mysqlpath = teamid+"mysql"
@@ -60,11 +46,13 @@ for team in range(teams):
     for member in range(4):
         ctr = c.create_container(image="afein/vt-experiment", 
                                  ports=[6080],
+                                 volumes=['/home/ubuntu/Desktop/Dropbox'],
                                  host_config=c.create_host_config(port_bindings={
                                      6080: ('0.0.0.0',)
                                  }, 
+                                     binds=[cwd + "/" + teamid + ":/home/ubuntu/Desktop/Dropbox"],
                                      links={mysqlpath:"mysql", gitpath:"git"}
                                  ))
         resp = c.start(container=ctr.get("Id"))
-        print " Team " + str(team) + " Member " + str(member) + " : http://" +ip +":"+ c.port(ctr.get("Id"), 6080)[0]["HostPort"]
+        print " Team " + str(team) + " Member " + str(member) + " port: " + c.port(ctr.get("Id"), 6080)[0]["HostPort"]
 

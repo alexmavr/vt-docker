@@ -52,10 +52,12 @@ RUN echo "ubuntu:ubuntu" | chpasswd
 ENV HOME /home/ubuntu
 WORKDIR /home/ubuntu
 
+RUN echo asasd
 ADD startup.sh /home/ubuntu/startup.sh
 ADD vistrails.sh /home/ubuntu/Desktop/
-ADD rsa_setup.sh /home/ubuntu/Desktop/
-RUN echo "asasd"
+ADD rsa_setup.sh /home/ubuntu/
+RUN mkdir /home/ubuntu/Desktop/Dropbox
+
 RUN git clone https://github.com/cmusv-sc/collaborative-vistrails /home/ubuntu/collaborative-vistrails
 RUN chown -R ubuntu /home/ubuntu/collaborative-vistrails
 RUN chgrp -R ubuntu /home/ubuntu/collaborative-vistrails
