@@ -3,6 +3,9 @@ from subprocess import call
 import os
 import signal
 import sys
+import socket
+import struct
+import fcntl
 
 cwd = os.getcwd()
 
@@ -18,6 +21,18 @@ def sigint_handler(signal, frame):
     sys.exit(0)
 
 signal.signal(signal.SIGINT, sigint_handler)
+
+# IP Address retrieval for an interface
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
+
+ip = get_ip_address('wlan0')  
+
 
 # Launch Form Redirect container on port 80
 ctr = c.create_container(image="afein/redirform", 
@@ -62,5 +77,5 @@ for team in range(teams):
                                      links={mysqlpath:"mysql", gitpath:"git"}
                                  ))
         resp = c.start(container=ctr.get("Id"))
-        print " Team " + str(team) + " Member " + str(member) + " port: " + c.port(ctr.get("Id"), 6080)[0]["HostPort"]
+        print " Team " + str(team) + " Member " + str(member) + " : http://" +ip +":"+ c.port(ctr.get("Id"), 6080)[0]["HostPort"]
 
