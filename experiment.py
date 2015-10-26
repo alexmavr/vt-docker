@@ -19,6 +19,14 @@ def sigint_handler(signal, frame):
 
 signal.signal(signal.SIGINT, sigint_handler)
 
+# Launch Form Redirect container on port 80
+ctr = c.create_container(image="afein/redirform", 
+                         ports=[80],
+                         host_config=c.create_host_config(port_bindings={
+                             80: ('0.0.0.0',)
+                         }))
+resp = c.start(container=ctr.get("Id"))
+
 for team in range(teams):
     teamid = "team"+str(team)
     print teamid
