@@ -52,7 +52,7 @@ RUN echo "ubuntu:ubuntu" | chpasswd
 ENV HOME /home/ubuntu
 WORKDIR /home/ubuntu
 
-RUN echo asasd
+RUN echo asasdasdasd
 ADD startup.sh /home/ubuntu/startup.sh
 ADD vistrails.sh /home/ubuntu/Desktop/
 ADD rsa_setup.sh /home/ubuntu/
