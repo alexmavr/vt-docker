@@ -38,7 +38,7 @@ ip = get_ip_address('wlan0')
 ctr = c.create_container(image="afein/redirform", 
                          ports=[80],
                          host_config=c.create_host_config(port_bindings={
-                             80: ('0.0.0.0',)
+                             80: ('0.0.0.0', 80)
                          }))
 resp = c.start(container=ctr.get("Id"))
 
