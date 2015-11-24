@@ -10,6 +10,7 @@ import fcntl
 cwd = os.getcwd()
 
 teams = int(raw_input("How many teams of 4 are there in the experiment? "))
+interface = int(raw_input("Which networking interface is externally visible?"))
 
 c = docker.Client()
 
@@ -31,7 +32,7 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
-ip = get_ip_address('wlan0')  
+ip = get_ip_address(interface)  
 
 
 # Launch Form Redirect container on port 80
