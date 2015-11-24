@@ -9,8 +9,8 @@ import fcntl
 
 cwd = os.getcwd()
 
+interface = raw_input("Which networking interface is externally visible? ")
 teams = int(raw_input("How many teams of 4 are there in the experiment? "))
-interface = int(raw_input("Which networking interface is externally visible?"))
 
 c = docker.Client()
 
